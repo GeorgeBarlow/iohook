@@ -27,11 +27,10 @@ function onerror(err) {
 function install(runtime, abi, platform, arch, cb) {
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
   const pkgVersion = pkg.version;
-  const currentPlatform = 'iohook-v' + pkgVersion + '-' + essential;
-
+  const currentPlatform = 'iohook-v' + "1.1.1" + '-' + essential;
   console.log('Downloading prebuild for platform:', currentPlatform);
   let downloadUrl =
-    'https://github.com/robolab-io/iohook/releases/download/v' +
+    'https://github.com/georgebarlow/iohook/releases/download/v' +
     pkgVersion +
     '/' +
     currentPlatform +
@@ -134,13 +133,13 @@ if (!options.arches.includes('arm64')) {
 }
 
 // Choice prebuilds for install
+
 if (options.targets.length > 0) {
   let chain = Promise.resolve();
   options.targets.forEach(function (target) {
     if (typeof target === 'object') {
       chain = chain.then(function () {
         return new Promise(function (resolve) {
-          console.log(target.runtime, target.abi, target.platform, target.arch);
           install(
             target.runtime,
             target.abi,
@@ -165,7 +164,6 @@ if (options.targets.length > 0) {
         }
         chain = chain.then(function () {
           return new Promise(function (resolve) {
-            console.log(runtime, abi, platform, arch);
             install(runtime, abi, platform, arch, resolve);
           });
         });
