@@ -149,7 +149,7 @@ function build(runtime, version, abi) {
     }
 
     if (parseInt(abi) >= 80) {
-      if (arch === 'x64') {
+      if (arch === 'x64' || arch === 'arm64') {
         args.push('--v8_enable_pointer_compression=1');
       } else {
         args.push('--v8_enable_pointer_compression=0');
@@ -182,6 +182,7 @@ function build(runtime, version, abi) {
       process.env.gyp_iohook_arch = arch;
     }
 
+    console.log(args);
     let proc = spawn(gypJsPath, args, {
       env: process.env,
     });
