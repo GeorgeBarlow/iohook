@@ -4,15 +4,15 @@ const path = require('path');
 const tar = require('tar');
 const argv = require('minimist')(process.argv.slice(2), {
   // Specify that these arguments should be a string
-  string: ['version', 'runtime', 'abi'],
+  string: ['version', 'runtime', 'abi', 'arch'],
 });
 const pkg = require('./package.json');
 const nodeAbi = require('node-abi');
 const { optionsFromPackage } = require('./helpers');
 
-let arch = process.env.ARCH
+let arch = ('arch' in argv) ? argv['arch'] : (process.env.ARCH
   ? process.env.ARCH.replace('i686', 'ia32').replace('x86_64', 'x64')
-  : process.arch;
+  : process.arch);
 
 let gypJsPath = path.join(
   __dirname,
@@ -27,7 +27,10 @@ let chain = Promise.resolve();
 
 initBuild();
 
+
 function initBuild() {
+  console.log(arch);
+
   // Check if a specific runtime has been specified from the command line
   if ('runtime' in argv && 'version' in argv && 'abi' in argv) {
     targets = [[argv['runtime'], argv['version'], argv['abi']]];
@@ -45,7 +48,7 @@ function initBuild() {
     if (process.env.npm_config_targets === 'all') {
       options.targets = supportedTargets.map((arr) => [arr[0], arr[2]]);
       options.platforms = ['win32', 'darwin', 'linux'];
-      options.arches = ['x64', 'ia32'];
+      options.arches = ['x64', 'ia32', 'arm64'];
     }
     if (process.env.npm_config_platforms) {
       options.platforms = options.platforms.concat(
@@ -132,6 +135,7 @@ function cpGyp() {
 }
 
 function build(runtime, version, abi) {
+  console.log('Building iohook for ' + runtime + ' v' + version + '<<<<')
   return new Promise(function (resolve, reject) {
     let args = [
       'configure',

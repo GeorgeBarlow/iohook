@@ -39,6 +39,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
+        architecture: [x64, arm64] # Define the architectures
 
     steps:
       - uses: actions/checkout@v3
@@ -48,14 +49,19 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: npm ci --ignore-scripts
-      - run: npm run build:ci --all
 
-      - name: Upload build artifacts
+      - run: npm ci --ignore-scripts
+
+      # Replace the following line with your actual build command for the specified architecture
+      - name: Build for ${{ matrix.architecture }}
+        run: npm run build:ci -- --arch=${{ matrix.architecture }}
+
+      - name: Upload build artifacts for ${{ matrix.architecture }}
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: macOS Prebuilds
-          path: prebuilds
+          name: macOS Prebuilds ${{ matrix.architecture }}
+          path: prebuilds/${{ matrix.architecture }}/
+        
 
   build-linux:
     runs-on: ubuntu-latest
