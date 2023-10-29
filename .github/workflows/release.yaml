@@ -56,7 +56,7 @@ jobs:
 
       # Replace the following line with your actual build command for the specified architecture
       - name: Build for ${{ matrix.architecture }}
-        run: npm run build -- --arch=${{ matrix.architecture }} --target_arch=${{ matrix.architecture }}
+        run: npm run build -- --all --arch=${{ matrix.architecture }} --target_arch=${{ matrix.architecture }}
 
       - name: Upload build artifacts for ${{ matrix.architecture }}
         uses: actions/upload-artifact@v3.1.2
